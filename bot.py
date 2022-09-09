@@ -13,6 +13,7 @@ import platform
 import random
 import sqlite3
 import sys
+from dotenv import load_dotenv
 
 from contextlib import closing
 
@@ -72,6 +73,8 @@ It is recommended to use slash commands and therefore not use prefix commands.
 If you want to use prefix commands, make sure to also enable the intent below in the Discord developer portal.
 """
 # intents.message_content = True
+
+load_dotenv()
 
 bot = Bot(command_prefix=commands.when_mentioned_or(config["prefix"]), intents=intents, help_command=None)
 
@@ -222,4 +225,4 @@ async def load_cogs() -> None:
 
 init_db()
 asyncio.run(load_cogs())
-bot.run(config["token"])
+bot.run(os.getenv('TOKEN'))
