@@ -28,7 +28,7 @@ class Owner(commands.Cog, name="owner"):
     @checks.is_owner()
     async def load(self, ctx, cog: str):
         try:
-            self.bot.load_extension(f"cogs.normal.{cog}")
+            await self.bot.load_extension(f"cogs.{cog}")
         except Exception as e:
             embed=discord.Embed(title="load", description=f"Could not load the `{cog}` cog.")
             await ctx.send(embed=embed)
@@ -44,7 +44,7 @@ class Owner(commands.Cog, name="owner"):
     @checks.is_owner()
     async def unload(self, ctx, cog: str):
         try:
-            self.bot.unload_extension(f"cogs.normal.{cog}")
+            await self.bot.unload_extension(f"cogs.{cog}")
         except Exception as e:
             embed=discord.Embed(title="Unload", description=f"Could not unload the `{cog}` cog.")
             await ctx.send(embed=embed)
@@ -59,8 +59,8 @@ class Owner(commands.Cog, name="owner"):
     @checks.is_owner()
     async def reload(self, ctx, cog: str):
         try:
-            self.bot.unload_extension(f"cogs.normal.{cog}")
-            self.cog.load_extension(f"cogs.normal.{cog}")
+            await self.bot.unload_extension(f"cogs.{cog}")
+            await self.bot.load_extension(f"cogs.{cog}")
         except Exception as e:
             embed=discord.Embed(title="Reload", description=f"Could not reload the `{cog}` cog.")
             await ctx.send(embed=embed)
