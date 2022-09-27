@@ -27,7 +27,7 @@ class Owner(commands.Cog, name="owner"):
     )
     @checks.is_owner()
     async def load(self, context: Context, cog: str):
-         """
+        """
         The bot will load the given cog.
         :param context: The hybrid command context.
         :param cog: The cog to be loaded.
