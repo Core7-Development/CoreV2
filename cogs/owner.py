@@ -26,7 +26,7 @@ class Owner(commands.Cog, name="owner"):
         description="Load a cog",
     )
     @checks.is_owner()
-    async def load(self, context: Context, cog: str):
+    async def load(self, context: Context, cog: str) -> None:
         """
         The bot will load the given cog.
         :param context: The hybrid command context.
@@ -46,7 +46,7 @@ class Owner(commands.Cog, name="owner"):
         description="Unloads a cog.",
     )
     @checks.is_owner()
-    async def unload(self, context: Context, cog: str):
+    async def unload(self, context: Context, cog: str) -> None:
         """
         The bot will unload the given cog.
         :param context: The hybrid command context.
@@ -65,7 +65,7 @@ class Owner(commands.Cog, name="owner"):
         description="Reloads a cog.",
     )
     @checks.is_owner()
-    async def reload(self, context: Context, cog: str):
+    async def reload(self, context: Context, cog: str) -> None:
         """
         The bot will reload the given cog.
         :param context: The hybrid command context.
