@@ -8,7 +8,9 @@ from discord import app_commands
 from discord.ext.commands import Context
 from helpers import checks
 
-from btns_menus.Paginator import *
+
+from reactionmenu import ViewMenu, ViewButton
+
 
 if not os.path.isfile("config.json"):
     sys.exit("'config.json' not found! Please add it and try again.")
@@ -21,14 +23,36 @@ class Help(commands.Cog, name="help"):
     def __init__(self, bot):
         self.bot = bot
 
+    # @commands.hybrid_command(
+    #     name="help",
+    #     description="List all commands the bot has loaded."
+    # )
+    # async def help(self, context: Context) -> None:
+    #     prefix = self.bot.config["prefix"]
+    #     embed = discord.Embed(title="Help", description="List of available commands:", color=0x9C84EF)
+    #     for i in self.bot.cogs:
+    #         cog = self.bot.get_cog(i.lower())
+    #         commands = cog.get_commands()
+    #         data = []
+    #         for command in commands:
+    #             description = command.description.partition('\n')[0]
+    #             data.append(f"{prefix}{command.name} - {description}")
+    #         help_text = "\n".join(data)
+    #         embed.add_field(name=i.capitalize(), value=f'```{help_text}```', inline=False)
+    #     await context.send(embed=embed)
+
+
     @commands.hybrid_command(
-        name="help",
+        name="hel",
         description="List all commands the bot has loaded."
     )
-    async def help(self, context: Context) -> None:
+    async def hel(self, context: Context, interaction) -> None:
         prefix = self.bot.config["prefix"]
         embed = discord.Embed(title="Help", description="List of available commands:", color=0x9C84EF)
+        menu = ViewMenu(interaction, menu_type=ViewMenu.TypeEmbed)
         for i in self.bot.cogs:
+            pg = discord.Embed(title=i, description="", color=0x9C84EF)
+            
             cog = self.bot.get_cog(i.lower())
             commands = cog.get_commands()
             data = []
@@ -36,8 +60,16 @@ class Help(commands.Cog, name="help"):
                 description = command.description.partition('\n')[0]
                 data.append(f"{prefix}{command.name} - {description}")
             help_text = "\n".join(data)
-            embed.add_field(name=i.capitalize(), value=f'```{help_text}```', inline=False)
-        await context.send(embed=embed)
+            pg.add_field(name=i.capitalize(), value=f'```{help_text}```', inline=False)
+            menu.add_page(pg)
+        
+        home_button = ViewButton(style=discord.ButtonStyle.emoji, emoji='🏠', custom_id=ViewButton.ID_GO_TO_FIRST_PAGE)
+        menu.add_button(home_button)   
+        menu.add_button(ViewButton.back())
+        menu.add_button(ViewButton.next())
+        await menu.start()
+    
+    
 
     # @commands.hybrid_command(
     #     name="help",
