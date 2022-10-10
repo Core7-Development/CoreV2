@@ -10,6 +10,7 @@ from helpers import checks
 
 
 from reactionmenu import ViewMenu, ViewButton
+import Paginator
 
 
 if not os.path.isfile("config.json"):
@@ -22,6 +23,11 @@ else:
 class Help(commands.Cog, name="help"):
     def __init__(self, bot):
         self.bot = bot
+
+    # These arguments override the default ones.
+
+   
+
 
     # @commands.hybrid_command(
     #     name="help",
@@ -43,31 +49,41 @@ class Help(commands.Cog, name="help"):
 
 
     @commands.hybrid_command(
-        name="hel",
+        name="help",
         description="List all commands the bot has loaded."
     )
-    async def hel(self, context: Context, interaction) -> None:
+    async def help(self, context: Context) -> None:
         prefix = self.bot.config["prefix"]
-        embed = discord.Embed(title="Help", description="List of available commands:", color=0x9C84EF)
-        menu = ViewMenu(interaction, menu_type=ViewMenu.TypeEmbed)
+        embeds = []
+
         for i in self.bot.cogs:
-            pg = discord.Embed(title=i, description="", color=0x9C84EF)
-            
             cog = self.bot.get_cog(i.lower())
+
+            embed=discord.Embed(title=i.capitalize(), description="", color=0x36393f)
             commands = cog.get_commands()
-            data = []
-            for command in commands:
-                description = command.description.partition('\n')[0]
-                data.append(f"{prefix}{command.name} - {description}")
-            help_text = "\n".join(data)
-            pg.add_field(name=i.capitalize(), value=f'```{help_text}```', inline=False)
-            menu.add_page(pg)
+            command_list = [command.name for command in commands]
+            command_description = [command.help for command in commands]
+
+            for c in command_list:
+                embed.add_field(name=c, value=command_description[command_list.index(c)], inline=False)
+            
+            embeds.append(embed)
+            #help_text = '\n'.join(f'{prefix}{n} - {h}' for n, h in zip(command_list, command_description))
+
+
+        PreviousButton = discord.ui.Button(label="⬅️",style=discord.ButtonStyle.gray)
+        NextButton = discord.ui.Button(label="➡️",style=discord.ButtonStyle.gray)
+        PageCounterStyle = discord.ButtonStyle.gray # Only accepts ButtonStyle instead of Button
+        InitialPage = 0 # Page to start the paginator on.
+        timeout = 42069 # Seconds to timeout. Default is 60
+
+        await Paginator.Simple(
+            PreviousButton=PreviousButton,
+            NextButton=NextButton,
+            PageCounterStyle=PageCounterStyle,
+            InitialPage=InitialPage,
+            timeout=timeout).start(context, pages=embeds)
         
-        home_button = ViewButton(style=discord.ButtonStyle.emoji, emoji='🏠', custom_id=ViewButton.ID_GO_TO_FIRST_PAGE)
-        menu.add_button(home_button)   
-        menu.add_button(ViewButton.back())
-        menu.add_button(ViewButton.next())
-        await menu.start()
     
     
 
